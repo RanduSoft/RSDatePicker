@@ -4,14 +4,10 @@ A beautiful UIView wrapper for UIDatePicker. Requires iOS 13.2 or newer
 
 ## Setup
 - Storyboard
-	1. Create a `UIView` and set its custom class to `RSDatePicker`
-	2. Link it with a `IBOutlet` in the class you want
-	3. Check usage
+Create a `UIView` and set its custom class to `RSDatePicker` and link it with a `IBOutlet` in the class you want
 
 - Code
-	1. `let datePicker = RSDatePicker(frame: CGRect)`
-	2. Check usage
-
+`let datePicker = RSDatePicker(frame: CGRect)`
 
 ## Usage
 
@@ -26,6 +22,7 @@ You can customize the date picker in multiple ways:
 - `closeAnimationDuration` controls the animation speed when closing the picker
 
 There is also a callback for receiving the new picked date: `didChangeDate`
+
 You can also get or set the current date whenever you need by using `currentDate`
 
 ## License
