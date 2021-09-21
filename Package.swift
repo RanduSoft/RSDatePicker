@@ -6,9 +6,15 @@ let package = Package(
     name: "RSDatePicker",
 	platforms: [.iOS(.v13)],
     products: [
-        .library(name: "RSDatePicker", targets: ["RSDatePicker"]),
+        .library(name: "RSDatePicker", targets: ["RSDatePicker"])
     ],
     targets: [
-		.target(name: "RSDatePicker", path: "Files"),
+		.target(
+			name: "RSDatePicker",
+			path: "Files",
+			resources: [
+				.process("RSDatePicker.xib")
+			]
+		)
     ]
 )
