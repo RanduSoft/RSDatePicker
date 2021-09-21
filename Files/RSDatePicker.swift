@@ -151,11 +151,7 @@ fileprivate extension RSDatePicker {
 	}
 
 	private func loadViewFromNib() -> UIView {
-		guard let nibName = type(of: self).description().components(separatedBy: ".").last else {
-			fatalError("Bad nib name")
-		}
-		
-		if let defaultBundleView = UINib(nibName: nibName, bundle: Bundle(for: type(of: self))).instantiate(withOwner: self, options: nil).first as? UIView {
+		if let defaultBundleView = UINib(nibName: "RSDatePicker", bundle: Bundle.module).instantiate(withOwner: self, options: nil).first as? UIView {
 			return defaultBundleView
 		} else {
 			fatalError("Cannot load view from bundle")
