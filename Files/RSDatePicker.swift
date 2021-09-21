@@ -23,6 +23,7 @@ import UIKit
 	public var maximumDate: Date?
 	public var pickerMode: UIDatePicker.Mode?
 	public var dateFormat: String?
+	public var closeWhenSelectingDate: Bool = true
 	public var closeAnimationDuration: CGFloat = 0.3
 	
 	// callback
@@ -78,6 +79,8 @@ import UIKit
 	
 	@IBAction private func dateChangedAction(_ sender: UIDatePicker) {
 		self.currentDate = sender.date
+		
+		guard self.closeWhenSelectingDate else { return }
 		
 		guard let datePickerVC = self.getTopMostVC() else { return }
 		let animationDuration = self.closeAnimationDuration
