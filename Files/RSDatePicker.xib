@@ -1,17 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="19162" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="19455" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19144"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19454"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="RSDatePicker" customModule="RSDatePicker">
             <connections>
+                <outlet property="calendarImageView" destination="Euo-XS-dzT" id="RME-2a-SKG"/>
                 <outlet property="dateLabel" destination="4uN-Y8-3mv" id="sBR-fE-emF"/>
                 <outlet property="datePicker" destination="Euo-XS-dzT" id="c3s-d7-rQK"/>
+                <outlet property="stackViewMarginBottom" destination="pnN-vt-sAS" id="EgQ-Xj-eBb"/>
+                <outlet property="stackViewMarginLeft" destination="tHP-nu-E9B" id="Ta8-h1-IIr"/>
+                <outlet property="stackViewMarginRight" destination="Bkz-LI-jXP" id="cik-v6-mhJ"/>
+                <outlet property="stackViewMarginTop" destination="SAO-Mn-oFA" id="CcA-Um-1RO"/>
             </connections>
         </placeholder>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>

@@ -20,6 +20,9 @@ You can customize the date picker in multiple ways:
 - `dateFormat` sets the date format for the visible label
 - `closeWhenSelectingDate` allows you to enable/disable closing after a date was picked
 - `closeAnimationDuration` controls the animation speed when closing the picker
+- `calendarIconIsHidden` controls if the calendar icon is hidden
+
+You can change the margins (`left/right/top/bottomMargin`) of the container view
 
 There is also a callback for receiving the new picked date: `didChangeDate`
 

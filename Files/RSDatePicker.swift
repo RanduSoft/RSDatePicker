@@ -2,7 +2,7 @@
 //  RSDatePicker
 //
 //  Created by Radu Ursache - RanduSoft
-//  v1.0
+//  v1.1.0
 //
 
 import UIKit
@@ -14,8 +14,13 @@ import UIKit
 	@IBOutlet public weak var view: UIView!
 	private var didLoad: Bool = false
 	
+	@IBOutlet private weak var calendarImageView: UIDatePicker!
 	@IBOutlet private weak var datePicker: UIDatePicker!
 	@IBOutlet private weak var dateLabel: UILabel!
+	@IBOutlet private weak var stackViewMarginLeft: NSLayoutConstraint!
+	@IBOutlet private weak var stackViewMarginRight: NSLayoutConstraint!
+	@IBOutlet private weak var stackViewMarginTop: NSLayoutConstraint!
+	@IBOutlet private weak var stackViewMarginBottom: NSLayoutConstraint!
 	
 	// config
 	public var initialDate: Date?
@@ -25,6 +30,27 @@ import UIKit
 	public var dateFormat: String?
 	public var closeWhenSelectingDate: Bool = true
 	public var closeAnimationDuration: CGFloat = 0.3
+	public var calendarIconIsHidden: Bool = false
+	public var leftMargin: Double = 8 {
+		didSet {
+			self.updateMargins()
+		}
+	}
+	public var rightMargin: Double = 8 {
+		didSet {
+			self.updateMargins()
+		}
+	}
+	public var topMargin: Double = 8 {
+		didSet {
+			self.updateMargins()
+		}
+	}
+	public var bottomMargin: Double = 8 {
+		didSet {
+			self.updateMargins()
+		}
+	}
 	
 	// callback
 	public var didChangeDate: ((Date) -> Void)?
@@ -66,6 +92,8 @@ import UIKit
 		self.datePicker.maximumDate = self.maximumDate
 		self.datePicker.datePickerMode = self.pickerMode ?? .date
 		self.datePicker.alpha = 0.03
+		self.calendarImageView.isHidden = self.calendarIconIsHidden
+		self.updateMargins()
 		self.didUpdateDate()
 	}
 	
@@ -103,6 +131,17 @@ import UIKit
 					datePickerVC.dismiss(animated: false)
 				}
 			}
+		}
+	}
+	
+	private func updateMargins() {
+		DispatchQueue.main.async {
+			self.stackViewMarginLeft.constant = self.leftMargin
+			self.stackViewMarginRight.constant = self.rightMargin
+			self.stackViewMarginTop.constant = self.topMargin
+			self.stackViewMarginBottom.constant = self.bottomMargin
+			
+			self.view.layoutIfNeeded()
 		}
 	}
 }
