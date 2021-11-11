@@ -33,7 +33,7 @@
                             <nil key="textColor"/>
                             <nil key="highlightedColor"/>
                         </label>
-                        <view contentMode="scaleToFill" horizontalHuggingPriority="248" translatesAutoresizingMaskIntoConstraints="NO" id="xwk-0j-NAQ" userLabel="spacer">
+                        <view userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" translatesAutoresizingMaskIntoConstraints="NO" id="xwk-0j-NAQ" userLabel="spacer">
                             <rect key="frame" x="41.5" y="0.0" width="165.5" height="54"/>
                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         </view>
