@@ -33,6 +33,7 @@ import UIKit
 	public var calendarIconIsHidden: Bool = false {
 		didSet {
 			self.calendarImageView.isHidden = self.calendarIconIsHidden
+			self.calendarImageView.alpha = self.calendarIconIsHidden ? 0 : 1
 		}
 	}
 	public var leftMargin: Double = 8 {
