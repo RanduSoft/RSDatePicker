@@ -100,7 +100,7 @@ import UIKit
 		self.datePicker.maximumDate = self.maximumDate
 		self.datePicker.datePickerMode = self.pickerMode ?? .date
 		self.datePicker.alpha = 0.03
-		self.datePicker.date = self.currentDate
+		self.currentDate = self.datePicker.date
 		self.updateMargins()
 	}
 	
