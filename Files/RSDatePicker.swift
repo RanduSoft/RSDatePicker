@@ -30,7 +30,11 @@ import UIKit
 	public var dateFormat: String?
 	public var closeWhenSelectingDate: Bool = true
 	public var closeAnimationDuration: CGFloat = 0.3
-	public var calendarIconIsHidden: Bool = false
+	public var calendarIconIsHidden: Bool = false {
+		didSet {
+			self.calendarImageView.isHidden = self.calendarIconIsHidden
+		}
+	}
 	public var leftMargin: Double = 8 {
 		didSet {
 			self.updateMargins()
@@ -51,14 +55,15 @@ import UIKit
 			self.updateMargins()
 		}
 	}
-	
-	// callback
-	public var didChangeDate: ((Date) -> Void)?
 	public var currentDate = Date() {
 		didSet {
 			self.didUpdateDate()
 		}
 	}
+	
+	// callback
+	public var didChangeDate: ((Date) -> Void)?
+	
 	
 	public override init(frame: CGRect) {
 		super.init(frame: frame)
