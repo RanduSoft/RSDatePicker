@@ -2,7 +2,7 @@
 //  RSDatePicker
 //
 //  Created by Radu Ursache - RanduSoft
-//  v1.1.0
+//  v1.2.0
 //
 
 import UIKit
@@ -14,7 +14,7 @@ import UIKit
 	@IBOutlet public weak var view: UIView!
 	private var didLoad: Bool = false
 	
-	@IBOutlet private weak var calendarImageView: UIDatePicker!
+	@IBOutlet private weak var calendarImageView: UIImageView!
 	@IBOutlet private weak var datePicker: UIDatePicker!
 	@IBOutlet private weak var dateLabel: UILabel!
 	@IBOutlet private weak var stackViewMarginLeft: NSLayoutConstraint!
@@ -33,7 +33,7 @@ import UIKit
 	public var calendarIconIsHidden: Bool = false {
 		didSet {
 			self.calendarImageView.isHidden = self.calendarIconIsHidden
-			self.calendarImageView.alpha = self.calendarIconIsHidden ? 0 : 1
+			self.dateLabel.textAlignment = self.calendarIconIsHidden ? .center : .left
 		}
 	}
 	public var leftMargin: Double = 8 {
@@ -58,7 +58,9 @@ import UIKit
 	}
 	public var currentDate = Date() {
 		didSet {
-			self.didUpdateDate()
+			DispatchQueue.main.async {
+				self.didUpdateDate()
+			}
 		}
 	}
 	
@@ -92,22 +94,20 @@ import UIKit
 	}
 	
 	private func prepareDatePicker() {
+		self.datePicker.layer.zPosition = CGFloat(MAXFLOAT)
 		self.datePicker.date = self.initialDate ?? Date()
-		self.currentDate = self.datePicker.date
 		self.datePicker.minimumDate = self.minimumDate
 		self.datePicker.maximumDate = self.maximumDate
 		self.datePicker.datePickerMode = self.pickerMode ?? .date
 		self.datePicker.alpha = 0.03
-		self.calendarImageView.isHidden = self.calendarIconIsHidden
+		self.datePicker.date = self.currentDate
 		self.updateMargins()
-		self.didUpdateDate()
 	}
 	
 	private func didUpdateDate() {
 		let dateFormatter = DateFormatter()
 		dateFormatter.dateFormat = self.dateFormat ?? "dd/MM/YYYY"
 		self.dateLabel.text = dateFormatter.string(from: self.currentDate)
-		self.datePicker.date = self.currentDate
 		self.didChangeDate?(self.currentDate)
 	}
 	

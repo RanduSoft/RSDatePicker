@@ -10,7 +10,7 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="RSDatePicker" customModule="RSDatePicker">
             <connections>
-                <outlet property="calendarImageView" destination="Euo-XS-dzT" id="RME-2a-SKG"/>
+                <outlet property="calendarImageView" destination="3TP-IY-JNT" id="SBf-Ze-Plo"/>
                 <outlet property="dateLabel" destination="4uN-Y8-3mv" id="sBR-fE-emF"/>
                 <outlet property="datePicker" destination="Euo-XS-dzT" id="c3s-d7-rQK"/>
                 <outlet property="stackViewMarginBottom" destination="pnN-vt-sAS" id="EgQ-Xj-eBb"/>
@@ -24,19 +24,15 @@
             <rect key="frame" x="0.0" y="0.0" width="279" height="70"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <stackView opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="MKE-R0-Ri8">
+                <stackView opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="MKE-R0-Ri8">
                     <rect key="frame" x="10" y="8" width="261" height="54"/>
                     <subviews>
-                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="252" verticalHuggingPriority="251" horizontalCompressionResistancePriority="754" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4uN-Y8-3mv">
-                            <rect key="frame" x="0.0" y="0.0" width="41.5" height="54"/>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="252" verticalHuggingPriority="251" horizontalCompressionResistancePriority="754" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4uN-Y8-3mv">
+                            <rect key="frame" x="0.0" y="0.0" width="207" height="54"/>
                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                             <nil key="textColor"/>
                             <nil key="highlightedColor"/>
                         </label>
-                        <view userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" translatesAutoresizingMaskIntoConstraints="NO" id="xwk-0j-NAQ" userLabel="spacer">
-                            <rect key="frame" x="41.5" y="0.0" width="165.5" height="54"/>
-                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                        </view>
                         <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="calendar" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="3TP-IY-JNT">
                             <rect key="frame" x="207" y="1" width="54" height="51.5"/>
                             <color key="tintColor" systemColor="labelColor"/>
