@@ -108,11 +108,11 @@ import UIKit
 		let dateFormatter = DateFormatter()
 		dateFormatter.dateFormat = self.dateFormat ?? "dd/MM/YYYY"
 		self.dateLabel.text = dateFormatter.string(from: self.currentDate)
-		self.didChangeDate?(self.currentDate)
 	}
 	
 	@IBAction private func dateChangedAction(_ sender: UIDatePicker) {
 		self.currentDate = sender.date
+		self.didChangeDate?(self.currentDate)
 		
 		guard self.closeWhenSelectingDate else { return }
 		
