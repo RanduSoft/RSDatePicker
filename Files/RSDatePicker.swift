@@ -2,13 +2,13 @@
 //  RSDatePicker
 //
 //  Created by Radu Ursache - RanduSoft
-//  v1.2.0
+//  v1.3.0
 //
 
 import UIKit
 
 @available(iOS 13.2, *)
-@IBDesignable public class RSDatePicker: UIView {
+public class RSDatePicker: UIView {
 	
 	// xib loader
 	@IBOutlet public weak var view: UIView!
@@ -77,7 +77,6 @@ import UIKit
 	// callback
 	public var didChangeDate: ((Date) -> Void)?
 	
-	
 	public override init(frame: CGRect) {
 		super.init(frame: frame)
 		
@@ -104,6 +103,7 @@ import UIKit
 	}
 	
 	private func prepareDatePicker() {
+		self.hideDateLabel()
 		self.datePicker.layer.zPosition = CGFloat(MAXFLOAT)
 		self.datePicker.date = self.initialDate ?? Date()
 		self.datePicker.minimumDate = self.minimumDate
@@ -120,7 +120,12 @@ import UIKit
 		self.dateLabel.text = dateFormatter.string(from: self.currentDate)
 	}
 	
+	private func hideDateLabel() {
+		self.datePicker.subviews.first?.subviews.first?.subviews.filter({ "\($0.classForCoder)" == "_UIDatePickerLinkedLabel" }).first?.alpha = 0
+	}
+	
 	@IBAction private func dateChangedAction(_ sender: UIDatePicker) {
+		self.hideDateLabel()
 		self.currentDate = sender.date
 		self.didChangeDate?(self.currentDate)
 		
@@ -141,10 +146,11 @@ import UIKit
 			UIView.animate(withDuration: animationDuration/2) {
 				datePickerVC.view.alpha = 0
 			}
-		} completion: { finished in
+		} completion: { [weak self] finished in
 			if finished {
 				DispatchQueue.main.async {
 					datePickerVC.dismiss(animated: false)
+					self?.hideDateLabel()
 				}
 			}
 		}
