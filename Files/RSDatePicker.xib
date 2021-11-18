@@ -10,6 +10,7 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="RSDatePicker" customModule="RSDatePicker">
             <connections>
+                <outlet property="calendarIconConstraint" destination="ZJ7-mm-nG0" id="XRW-sw-M0y"/>
                 <outlet property="calendarImageView" destination="3TP-IY-JNT" id="SBf-Ze-Plo"/>
                 <outlet property="dateLabel" destination="4uN-Y8-3mv" id="sBR-fE-emF"/>
                 <outlet property="datePicker" destination="Euo-XS-dzT" id="c3s-d7-rQK"/>

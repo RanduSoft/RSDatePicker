@@ -21,6 +21,7 @@ You can customize the date picker in multiple ways:
 - `closeWhenSelectingDate` allows you to enable/disable closing after a date was picked
 - `closeAnimationDuration` controls the animation speed when closing the picker
 - `calendarIconIsHidden` controls if the calendar icon is hidden
+- `calendarIconSizeMultiplier` controls the multiplier of the aspect ratio of the calendar imageview
 
 You can change the margins (`left/right/top/bottomMargin`) of the container view
 

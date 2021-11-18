@@ -13,6 +13,7 @@ public class RSDatePicker: UIView {
 	// xib loader
 	@IBOutlet public weak var view: UIView!
 	private var didLoad: Bool = false
+	private var timer: Timer?
 	
 	@IBOutlet private weak var calendarImageView: UIImageView!
 	@IBOutlet private weak var datePicker: UIDatePicker!
@@ -21,6 +22,7 @@ public class RSDatePicker: UIView {
 	@IBOutlet private weak var stackViewMarginRight: NSLayoutConstraint!
 	@IBOutlet private weak var stackViewMarginTop: NSLayoutConstraint!
 	@IBOutlet private weak var stackViewMarginBottom: NSLayoutConstraint!
+	@IBOutlet private weak var calendarIconConstraint: NSLayoutConstraint!
 	
 	// config
 	public var initialDate: Date?
@@ -34,6 +36,13 @@ public class RSDatePicker: UIView {
 		didSet {
 			self.calendarImageView.isHidden = self.calendarIconIsHidden
 			self.dateLabel.textAlignment = self.calendarIconIsHidden ? .center : .left
+		}
+	}
+	public var calendarIconSizeMultiplier: CGFloat? {
+		didSet {
+			guard let newMultiplier = self.calendarIconSizeMultiplier, newMultiplier >= 0 && newMultiplier <= 1 else { return }
+			self.calendarIconConstraint = self.calendarIconConstraint.setMultiplier(newMultiplier)
+			self.layoutIfNeeded()
 		}
 	}
 	public var font: UIFont? {
@@ -100,6 +109,11 @@ public class RSDatePicker: UIView {
 	
 	private func viewDidLoad() {
 		self.prepareDatePicker()
+		
+		self.timer = Timer(timeInterval: 0.5, repeats: true, block: { [weak self] _ in
+			self?.hideDateLabel()
+		})
+		RunLoop.main.add(self.timer!, forMode: .common)
 	}
 	
 	private func prepareDatePicker() {
@@ -217,5 +231,22 @@ fileprivate extension RSDatePicker {
 		} else {
 			fatalError("Cannot load view from bundle")
 		}
+	}
+}
+
+// constraint utils
+fileprivate extension NSLayoutConstraint {
+	func setMultiplier(_ multiplier: CGFloat) -> NSLayoutConstraint {
+
+		NSLayoutConstraint.deactivate([self])
+
+		let newConstraint = NSLayoutConstraint(item: firstItem as Any, attribute: firstAttribute, relatedBy: relation, toItem: secondItem, attribute: secondAttribute, multiplier: multiplier, constant: constant)
+
+		newConstraint.priority = self.priority
+		newConstraint.shouldBeArchived = self.shouldBeArchived
+		newConstraint.identifier = self.identifier
+
+		NSLayoutConstraint.activate([newConstraint])
+		return newConstraint
 	}
 }
