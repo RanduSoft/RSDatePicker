@@ -36,6 +36,16 @@ import UIKit
 			self.dateLabel.textAlignment = self.calendarIconIsHidden ? .center : .left
 		}
 	}
+	public var font: UIFont? {
+		didSet {
+			self.dateLabel.font = self.font
+		}
+	}
+	public var textColor: UIColor? {
+		didSet {
+			self.dateLabel.textColor = self.textColor
+		}
+	}
 	public var leftMargin: Double = 8 {
 		didSet {
 			self.updateMargins()
