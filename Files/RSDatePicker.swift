@@ -29,13 +29,13 @@ public class RSDatePicker: UIView {
 	public var minimumDate: Date? {
 		didSet {
 			self.datePicker.minimumDate = self.minimumDate
-			self.didUpdateDate()
+			if self.datePicker.date < self.minimumDate! { self.currentDate = self.minimumDate }
 		}
 	}
 	public var maximumDate: Date? {
 		didSet {
 			self.datePicker.maximumDate = self.maximumDate
-			self.didUpdateDate()
+			if self.datePicker.date > self.maximumDate! { self.currentDate = self.maximumDate }
 		}
 	}
 	public var pickerMode: UIDatePicker.Mode?
