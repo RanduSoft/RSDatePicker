@@ -2,8 +2,16 @@
 //  RSDatePicker
 //
 //  Created by Radu Ursache - RanduSoft
-//  v1.3.0
+//  v1.4.0
 //
+
+/*
+ 
+ Known issues:
+	- Selecting the same day in different month/year with closeWhenSelectingDate = true will not close the popup. Fixing this will actually make the popup close for each month/year change
+	- The popup will be presented over the view when using a big frame height. This could be fixed by fiddling with the transform of the underlaying date picker
+ 
+ */
 
 import UIKit
 
@@ -28,14 +36,12 @@ public class RSDatePicker: UIView {
 	public var initialDate: Date?
 	public var minimumDate: Date? {
 		didSet {
-			self.datePicker.minimumDate = self.minimumDate
-			if self.datePicker.date < self.minimumDate! { self.currentDate = self.minimumDate! }
+			self.checkDateLimits()
 		}
 	}
 	public var maximumDate: Date? {
 		didSet {
-			self.datePicker.maximumDate = self.maximumDate
-			if self.datePicker.date > self.maximumDate! { self.currentDate = self.maximumDate! }
+			self.checkDateLimits()
 		}
 	}
 	public var pickerMode: UIDatePicker.Mode?
@@ -121,9 +127,6 @@ public class RSDatePicker: UIView {
 	private func viewDidLoad() {
 		self.prepareDatePicker()
 		
-//		self.clipsToBounds = false
-//		self.view.clipsToBounds = false
-		
 		self.timer = Timer(timeInterval: 0.5, repeats: true, block: { [weak self] _ in
 			self?.hideDateLabel()
 		})
@@ -133,12 +136,10 @@ public class RSDatePicker: UIView {
 	private func prepareDatePicker() {
 		self.hideDateLabel()
 		self.datePicker.layer.zPosition = CGFloat(MAXFLOAT)
-		self.datePicker.minimumDate = self.minimumDate
-		self.datePicker.maximumDate = self.maximumDate
-		self.datePicker.date = self.initialDate ?? Date()
 		self.datePicker.datePickerMode = self.pickerMode ?? .date
 		self.datePicker.alpha = 0.03
-		self.currentDate = self.datePicker.date
+		self.datePicker.date = self.initialDate ?? Date()
+		self.checkDateLimits()
 		self.updateMargins()
 	}
 	
@@ -146,6 +147,19 @@ public class RSDatePicker: UIView {
 		let dateFormatter = DateFormatter()
 		dateFormatter.dateFormat = self.dateFormat ?? "dd/MM/YYYY"
 		self.dateLabel.text = dateFormatter.string(from: self.currentDate)
+	}
+	
+	private func checkDateLimits() {
+		self.datePicker.minimumDate = self.minimumDate
+		self.datePicker.maximumDate = self.maximumDate
+		
+		if let minimumDate = self.minimumDate, self.datePicker.date < minimumDate {
+			self.datePicker.date = minimumDate
+		} else if let maximumDate = self.maximumDate, self.datePicker.date > maximumDate {
+			self.datePicker.date = maximumDate
+		}
+		
+		self.currentDate = self.datePicker.date
 	}
 	
 	private func hideDateLabel() {
@@ -164,25 +178,28 @@ public class RSDatePicker: UIView {
 	}
 	
 	@IBAction private func dateChangedAction(_ sender: UIDatePicker) {
+		let changedDay: Bool = Calendar.current.component(.day, from: self.currentDate) != Calendar.current.component(.day, from: sender.date)
+		
 		self.hideDateLabel()
 		self.currentDate = sender.date
 		self.didChangeDate?(self.currentDate)
 		
 		guard self.closeWhenSelectingDate else { return }
+		guard changedDay else { return }
 		
 		guard let datePickerVC = self.getTopMostVC() else { return }
 		let animationDuration = self.closeAnimationDuration
 		
 		let screenSize = UIScreen.main.bounds
 		let positionOnScreen = self.convert(CGPoint.zero, to: nil)
-		let anchorX = (positionOnScreen.x+self.frame.width/2)/screenSize.width
-		let anchorY = positionOnScreen.y/screenSize.height
+		let anchorX = (positionOnScreen.x + self.frame.width / 2) / screenSize.width
+		let anchorY = positionOnScreen.y / screenSize.height
 		
 		UIView.animate(withDuration: animationDuration, delay: 0.1, options: .curveEaseOut) { [weak self] in
 			self?.setAnchorPoint(CGPoint(x: anchorX, y: anchorY), for: datePickerVC.view)
 			datePickerVC.view.transform = CGAffineTransform(scaleX: 0.1, y: 0.1)
 			
-			UIView.animate(withDuration: animationDuration/2) {
+			UIView.animate(withDuration: animationDuration / 2) {
 				datePickerVC.view.alpha = 0
 			}
 		} completion: { [weak self] finished in
@@ -262,7 +279,6 @@ fileprivate extension RSDatePicker {
 // constraint utils
 fileprivate extension NSLayoutConstraint {
 	func setMultiplier(_ multiplier: CGFloat) -> NSLayoutConstraint {
-
 		NSLayoutConstraint.deactivate([self])
 
 		let newConstraint = NSLayoutConstraint(item: firstItem as Any, attribute: firstAttribute, relatedBy: relation, toItem: secondItem, attribute: secondAttribute, multiplier: multiplier, constant: constant)
