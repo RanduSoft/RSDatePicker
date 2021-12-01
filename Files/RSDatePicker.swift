@@ -29,11 +29,13 @@ public class RSDatePicker: UIView {
 	public var minimumDate: Date? {
 		didSet {
 			self.datePicker.minimumDate = self.minimumDate
+			self.didUpdateDate()
 		}
 	}
 	public var maximumDate: Date? {
 		didSet {
 			self.datePicker.maximumDate = self.maximumDate
+			self.didUpdateDate()
 		}
 	}
 	public var pickerMode: UIDatePicker.Mode?
@@ -119,8 +121,8 @@ public class RSDatePicker: UIView {
 	private func viewDidLoad() {
 		self.prepareDatePicker()
 		
-		self.clipsToBounds = false
-		self.view.clipsToBounds = false
+//		self.clipsToBounds = false
+//		self.view.clipsToBounds = false
 		
 		self.timer = Timer(timeInterval: 0.5, repeats: true, block: { [weak self] _ in
 			self?.hideDateLabel()
