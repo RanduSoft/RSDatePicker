@@ -26,8 +26,16 @@ public class RSDatePicker: UIView {
 	
 	// config
 	public var initialDate: Date?
-	public var minimumDate: Date?
-	public var maximumDate: Date?
+	public var minimumDate: Date? {
+		didSet {
+			self.datePicker.minimumDate = self.minimumDate
+		}
+	}
+	public var maximumDate: Date? {
+		didSet {
+			self.datePicker.maximumDate = self.maximumDate
+		}
+	}
 	public var pickerMode: UIDatePicker.Mode?
 	public var dateFormat: String?
 	public var closeWhenSelectingDate: Bool = true
@@ -75,6 +83,7 @@ public class RSDatePicker: UIView {
 			self.updateMargins()
 		}
 	}
+	public var forceScalePicker: Bool = false
 	public var currentDate = Date() {
 		didSet {
 			DispatchQueue.main.async {
@@ -110,6 +119,9 @@ public class RSDatePicker: UIView {
 	private func viewDidLoad() {
 		self.prepareDatePicker()
 		
+		self.clipsToBounds = false
+		self.view.clipsToBounds = false
+		
 		self.timer = Timer(timeInterval: 0.5, repeats: true, block: { [weak self] _ in
 			self?.hideDateLabel()
 		})
@@ -119,9 +131,9 @@ public class RSDatePicker: UIView {
 	private func prepareDatePicker() {
 		self.hideDateLabel()
 		self.datePicker.layer.zPosition = CGFloat(MAXFLOAT)
-		self.datePicker.date = self.initialDate ?? Date()
 		self.datePicker.minimumDate = self.minimumDate
 		self.datePicker.maximumDate = self.maximumDate
+		self.datePicker.date = self.initialDate ?? Date()
 		self.datePicker.datePickerMode = self.pickerMode ?? .date
 		self.datePicker.alpha = 0.03
 		self.currentDate = self.datePicker.date
@@ -135,7 +147,18 @@ public class RSDatePicker: UIView {
 	}
 	
 	private func hideDateLabel() {
-		self.datePicker.subviews.first?.subviews.first?.subviews.filter({ "\($0.classForCoder)" == "_UIDatePickerLinkedLabel" }).first?.alpha = 0
+		guard let datePickerLinkedLabel = self.datePicker.subviews.first?.subviews.first?.subviews.filter({ "\($0.classForCoder)" == "_UIDatePickerLinkedLabel" }).first else { return }
+		
+		datePickerLinkedLabel.alpha = 0
+//		datePickerLinkedLabel.backgroundColor = .red
+		
+		if self.forceScalePicker {
+			guard let actualPickerContainer = datePickerLinkedLabel.superview else { return }
+			
+	//		actualPickerContainer.transform = CGAffineTransform(scaleX: (self.view.frame.width / datePickerLinkedLabel.frame.width) * 2, y: 2)
+			
+			actualPickerContainer.transform = CGAffineTransform(scaleX: 6, y: 2.3)
+		}
 	}
 	
 	@IBAction private func dateChangedAction(_ sender: UIDatePicker) {
