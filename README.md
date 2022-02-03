@@ -4,9 +4,11 @@ A beautiful UIView wrapper for UIDatePicker. Requires iOS 13.2 or newer
 
 ## Setup
 - Storyboard
+
 Create a `UIView` and set its custom class to `RSDatePicker` and link it with a `IBOutlet` in the class you want
 
 - Code
+ 
 `let datePicker = RSDatePicker(frame: CGRect)`
 
 ## Usage
