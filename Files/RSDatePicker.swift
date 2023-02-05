@@ -2,7 +2,7 @@
 //  RSDatePicker
 //
 //  Created by Radu Ursache - RanduSoft
-//  v1.4.0
+//  v1.5.0
 //
 
 /*
@@ -32,6 +32,18 @@ public class RSDatePicker: UIView {
 	@IBOutlet private weak var stackViewMarginBottom: NSLayoutConstraint!
 	@IBOutlet private weak var calendarIconConstraint: NSLayoutConstraint!
 	
+    public enum PickerMode {
+        case date
+        case time
+        
+        var datePickerMode: UIDatePicker.Mode {
+            switch self {
+                case .date: return .date
+                case .time: return .time
+            }
+        }
+    }
+    
 	// config
 	public var initialDate: Date?
 	public var minimumDate: Date? {
@@ -44,7 +56,7 @@ public class RSDatePicker: UIView {
 			self.checkDateLimits()
 		}
 	}
-	public var pickerMode: UIDatePicker.Mode?
+	public var pickerMode: PickerMode?
 	public var dateFormat: String?
 	public var closeWhenSelectingDate: Bool = true
 	public var closeAnimationDuration: CGFloat = 0.3
@@ -136,7 +148,7 @@ public class RSDatePicker: UIView {
 	private func prepareDatePicker() {
 		self.hideDateLabel()
 		self.datePicker.layer.zPosition = CGFloat(MAXFLOAT)
-		self.datePicker.datePickerMode = self.pickerMode ?? .date
+        self.datePicker.datePickerMode = self.pickerMode?.datePickerMode ?? .date
 		self.datePicker.alpha = 0.03
 		self.datePicker.date = self.initialDate ?? Date()
 		self.checkDateLimits()
@@ -145,7 +157,7 @@ public class RSDatePicker: UIView {
 	
 	private func didUpdateDate() {
 		let dateFormatter = DateFormatter()
-		dateFormatter.dateFormat = self.dateFormat ?? "dd/MM/YYYY"
+        dateFormatter.dateFormat = self.dateFormat ?? (self.pickerMode == .date ? "dd/MM/YYYY" : "HH:mm")
 		self.dateLabel.text = dateFormatter.string(from: self.currentDate)
 	}
 	
@@ -163,17 +175,25 @@ public class RSDatePicker: UIView {
 	}
 	
 	private func hideDateLabel() {
-		guard let datePickerLinkedLabel = self.datePicker.subviews.first?.subviews.first?.subviews.filter({ "\($0.classForCoder)" == "_UIDatePickerLinkedLabel" }).first else { return }
-		
-		datePickerLinkedLabel.alpha = 0
-//		datePickerLinkedLabel.backgroundColor = .red
+        let datePickerSubviews = UIView.getAllSubviews(from: self.datePicker)
+        
+        let datePickerLinkedLabel = datePickerSubviews
+            .filter({ "\($0.classForCoder)" == "_UIDatePickerLinkedLabel" }).first
+        let datePickerTimeLabel = datePickerSubviews
+            .filter({ "\($0.classForCoder)" == "_UIDatePickerCompactTimeLabel" }).first
+        
+        datePickerLinkedLabel?.alpha = 0
+        datePickerTimeLabel?.alpha = 0.1 // can't be lower or it won't work
+//        datePickerTimeLabel?.backgroundColor = .red // debug
 		
 		if self.forceScalePicker {
-			guard let actualPickerContainer = datePickerLinkedLabel.superview else { return }
-			
-	//		actualPickerContainer.transform = CGAffineTransform(scaleX: (self.view.frame.width / datePickerLinkedLabel.frame.width) * 2, y: 2)
-			
-			actualPickerContainer.transform = CGAffineTransform(scaleX: 6, y: 2.3)
+            let scaleX: Double = 6
+            let scaleY: Double = 2.3
+            
+            if let actualPickerContainer = datePickerLinkedLabel?.superview {
+                actualPickerContainer.transform = CGAffineTransform(scaleX: scaleX, y: scaleY)
+            }
+            datePickerTimeLabel?.transform = CGAffineTransform(scaleX: scaleX * 2, y: scaleY)
 		}
 	}
 	
@@ -290,4 +310,32 @@ fileprivate extension NSLayoutConstraint {
 		NSLayoutConstraint.activate([newConstraint])
 		return newConstraint
 	}
+}
+
+// get subviews
+fileprivate extension UIView {
+    class func getAllSubviews<T: UIView>(from parenView: UIView) -> [T] {
+        return parenView.subviews.flatMap { subView -> [T] in
+            var result = getAllSubviews(from: subView) as [T]
+            if let view = subView as? T { result.append(view) }
+            return result
+        }
+    }
+
+    class func getAllSubviews(from parenView: UIView, types: [UIView.Type]) -> [UIView] {
+        return parenView.subviews.flatMap { subView -> [UIView] in
+            var result = getAllSubviews(from: subView) as [UIView]
+            for type in types {
+                if subView.classForCoder == type {
+                    result.append(subView)
+                    return result
+                }
+            }
+            return result
+        }
+    }
+
+    func getAllSubviews<T: UIView>() -> [T] { return UIView.getAllSubviews(from: self) as [T] }
+    func get<T: UIView>(all type: T.Type) -> [T] { return UIView.getAllSubviews(from: self) as [T] }
+    func get(all types: [UIView.Type]) -> [UIView] { return UIView.getAllSubviews(from: self, types: types) }
 }
