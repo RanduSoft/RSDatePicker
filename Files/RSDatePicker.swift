@@ -42,6 +42,13 @@ public class RSDatePicker: UIView {
                 case .time: return .time
             }
         }
+        
+        var defaultFormat: String {
+            switch self {
+                case .date: return "dd/MM/YYYY"
+                case .time: return "HH:mm"
+            }
+        }
     }
     
 	// config
@@ -157,7 +164,7 @@ public class RSDatePicker: UIView {
 	
 	private func didUpdateDate() {
 		let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = self.dateFormat ?? (self.pickerMode == .date ? "dd/MM/YYYY" : "HH:mm")
+        dateFormatter.dateFormat = self.dateFormat ?? (self.pickerMode?.defaultFormat ?? PickerMode.date.defaultFormat)
 		self.dateLabel.text = dateFormatter.string(from: self.currentDate)
 	}
 	

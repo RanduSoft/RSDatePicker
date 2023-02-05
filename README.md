@@ -18,7 +18,7 @@ You can customize the date picker in multiple ways:
 - `initialDate` sets the default date
 - `minimumDate` sets the minimum selectable date
 - `maximumDate` sets the maximum selectable date
-- `pickerMode` sets the date picker mode (`.date`, `time`, `.dateAndTime`)
+- `pickerMode` sets the date picker mode (`.date` or `time`)
 - `dateFormat` sets the date format for the visible label
 - `closeWhenSelectingDate` allows you to enable/disable closing after a date was picked
 - `closeAnimationDuration` controls the animation speed when closing the picker
