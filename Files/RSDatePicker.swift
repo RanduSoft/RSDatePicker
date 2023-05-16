@@ -16,7 +16,7 @@
 import UIKit
 
 @available(iOS 13.2, *)
-public class RSDatePicker: UIView {
+open class RSDatePicker: UIView {
 	
 	// xib loader
 	@IBOutlet public weak var view: UIView!
@@ -67,6 +67,11 @@ public class RSDatePicker: UIView {
 	public var dateFormat: String?
 	public var closeWhenSelectingDate: Bool = true
 	public var closeAnimationDuration: CGFloat = 0.3
+    public var calendarIconTint: UIColor = .label {
+        didSet {
+            self.calendarImageView.tintColor = self.calendarIconTint
+        }
+    }
 	public var calendarIconIsHidden: Bool = false {
 		didSet {
 			self.calendarImageView.isHidden = self.calendarIconIsHidden
@@ -118,6 +123,12 @@ public class RSDatePicker: UIView {
 			}
 		}
 	}
+    override open var backgroundColor: UIColor? {
+        didSet {
+            guard self.view != nil else { return }
+            self.view.backgroundColor = self.backgroundColor
+        }
+    }
 	
 	// callback
 	public var didChangeDate: ((Date) -> Void)?
@@ -290,6 +301,7 @@ fileprivate extension RSDatePicker {
 		self.view.frame = bounds
 		self.view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
 		self.view.translatesAutoresizingMaskIntoConstraints = true
+        self.view.backgroundColor = self.backgroundColor
 
 		addSubview(self.view)
 	}
