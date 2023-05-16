@@ -4,7 +4,7 @@ import PackageDescription
 
 let package = Package(
     name: "RSDatePicker",
-	platforms: [.iOS(.v13)],
+    platforms: [.iOS("13.2")],
     products: [
         .library(name: "RSDatePicker", targets: ["RSDatePicker"])
     ],
