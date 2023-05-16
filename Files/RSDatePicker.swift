@@ -165,7 +165,7 @@ open class RSDatePicker: UIView {
         self.updateUI()
 	}
     
-    public func updateUI() {}
+    open func updateUI() {}
 	
 	private func prepareDatePicker() {
 		self.hideDateLabel()
