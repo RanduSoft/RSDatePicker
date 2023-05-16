@@ -15,7 +15,7 @@
 
 import UIKit
 
-@available(iOS 13.2, *)
+@available(iOS 13.4, *)
 open class RSDatePicker: UIView {
 	
 	// xib loader
@@ -95,6 +95,12 @@ open class RSDatePicker: UIView {
 			self.dateLabel.textColor = self.textColor
 		}
 	}
+    public var initialText: String? {
+        didSet {
+            guard self.currentDate == nil else { return }
+            self.didUpdateDate()
+        }
+    }
 	public var leftMargin: Double = 8 {
 		didSet {
 			self.updateMargins()
@@ -116,7 +122,7 @@ open class RSDatePicker: UIView {
 		}
 	}
 	public var forceScalePicker: Bool = false
-	public var currentDate = Date() {
+    public var currentDate: Date? {
 		didSet {
 			DispatchQueue.main.async {
 				self.didUpdateDate()
@@ -156,7 +162,7 @@ open class RSDatePicker: UIView {
 	
 	private func viewDidLoad() {
 		self.prepareDatePicker()
-		
+        
 		self.timer = Timer(timeInterval: 0.5, repeats: true, block: { [weak self] _ in
 			self?.hideDateLabel()
 		})
@@ -169,6 +175,7 @@ open class RSDatePicker: UIView {
 	
 	private func prepareDatePicker() {
 		self.hideDateLabel()
+        self.datePicker.preferredDatePickerStyle = .compact
 		self.datePicker.layer.zPosition = CGFloat(MAXFLOAT)
         self.datePicker.datePickerMode = self.pickerMode?.datePickerMode ?? .date
 		self.datePicker.alpha = 0.03
@@ -177,10 +184,22 @@ open class RSDatePicker: UIView {
 		self.updateMargins()
 	}
 	
-	private func didUpdateDate() {
-		let dateFormatter = DateFormatter()
+    private func didUpdateDate() {
+        let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = self.dateFormat ?? (self.pickerMode?.defaultFormat ?? PickerMode.date.defaultFormat)
-		self.dateLabel.text = dateFormatter.string(from: self.currentDate)
+        
+        guard let currentDate = self.currentDate else {
+            if let initialText = self.initialText {
+                self.dateLabel.text = initialText
+            } else if let initialDate = self.initialDate {
+                self.dateLabel.text = dateFormatter.string(from: initialDate)
+            } else {
+                self.dateLabel.text = dateFormatter.string(from: Date())
+            }
+            return
+        }
+
+        self.dateLabel.text = dateFormatter.string(from: currentDate)
 	}
 	
 	private func checkDateLimits() {
@@ -192,8 +211,6 @@ open class RSDatePicker: UIView {
 		} else if let maximumDate = self.maximumDate, self.datePicker.date > maximumDate {
 			self.datePicker.date = maximumDate
 		}
-		
-		self.currentDate = self.datePicker.date
 	}
 	
 	private func hideDateLabel() {
@@ -220,11 +237,11 @@ open class RSDatePicker: UIView {
 	}
 	
 	@IBAction private func dateChangedAction(_ sender: UIDatePicker) {
-		let changedDay: Bool = Calendar.current.component(.day, from: self.currentDate) != Calendar.current.component(.day, from: sender.date)
+		let changedDay: Bool = Calendar.current.component(.day, from: self.currentDate ?? Date()) != Calendar.current.component(.day, from: sender.date)
 		
 		self.hideDateLabel()
 		self.currentDate = sender.date
-		self.didChangeDate?(self.currentDate)
+        self.didChangeDate?(sender.date)
 		
 		guard self.closeWhenSelectingDate else { return }
 		guard changedDay else { return }
@@ -267,7 +284,7 @@ open class RSDatePicker: UIView {
 }
 
 // utils
-@available(iOS 13.2, *)
+@available(iOS 13.4, *)
 fileprivate extension RSDatePicker {
 	func getTopMostVC() -> UIViewController? {
 		let keyWindow = UIApplication.shared.windows.filter { $0.isKeyWindow }.first
@@ -298,7 +315,7 @@ fileprivate extension RSDatePicker {
 }
 
 // xib loader
-@available(iOS 13.2, *)
+@available(iOS 13.4, *)
 fileprivate extension RSDatePicker {
 	private func nibSetup() {
 		self.view = self.loadViewFromNib()
