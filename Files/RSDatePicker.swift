@@ -52,7 +52,13 @@ open class RSDatePicker: UIView {
     }
     
 	// config
-	public var initialDate: Date?
+    public var currentDate: Date? {
+        didSet {
+            DispatchQueue.main.async {
+                self.didUpdateDate()
+            }
+        }
+    }
 	public var minimumDate: Date? {
 		didSet {
 			self.checkDateLimits()
@@ -95,7 +101,7 @@ open class RSDatePicker: UIView {
 			self.dateLabel.textColor = self.textColor
 		}
 	}
-    public var initialText: String? {
+    public var initialText: String = "Select date" {
         didSet {
             guard self.currentDate == nil else { return }
             self.didUpdateDate()
@@ -122,13 +128,7 @@ open class RSDatePicker: UIView {
 		}
 	}
 	public var forceScalePicker: Bool = false
-    public var currentDate: Date? {
-		didSet {
-			DispatchQueue.main.async {
-				self.didUpdateDate()
-			}
-		}
-	}
+    
     override open var backgroundColor: UIColor? {
         didSet {
             guard self.view != nil else { return }
@@ -179,9 +179,10 @@ open class RSDatePicker: UIView {
 		self.datePicker.layer.zPosition = CGFloat(MAXFLOAT)
         self.datePicker.datePickerMode = self.pickerMode?.datePickerMode ?? .date
 		self.datePicker.alpha = 0.03
-		self.datePicker.date = self.initialDate ?? Date()
 		self.checkDateLimits()
 		self.updateMargins()
+        
+        self.dateLabel.text = self.initialText
 	}
 	
     private func didUpdateDate() {
@@ -189,27 +190,24 @@ open class RSDatePicker: UIView {
         dateFormatter.dateFormat = self.dateFormat ?? (self.pickerMode?.defaultFormat ?? PickerMode.date.defaultFormat)
         
         guard let currentDate = self.currentDate else {
-            if let initialText = self.initialText {
-                self.dateLabel.text = initialText
-            } else if let initialDate = self.initialDate {
-                self.dateLabel.text = dateFormatter.string(from: initialDate)
-            } else {
-                self.dateLabel.text = dateFormatter.string(from: Date())
-            }
+            self.dateLabel.text = self.initialText
             return
         }
-
+        
+        self.datePicker.date = currentDate
         self.dateLabel.text = dateFormatter.string(from: currentDate)
 	}
 	
 	private func checkDateLimits() {
 		self.datePicker.minimumDate = self.minimumDate
 		self.datePicker.maximumDate = self.maximumDate
+        
+        guard let currentDate = self.currentDate else { return }
 		
-		if let minimumDate = self.minimumDate, self.datePicker.date < minimumDate {
-			self.datePicker.date = minimumDate
-		} else if let maximumDate = self.maximumDate, self.datePicker.date > maximumDate {
-			self.datePicker.date = maximumDate
+		if let minimumDate = self.minimumDate, currentDate < minimumDate {
+			self.currentDate = minimumDate
+		} else if let maximumDate = self.maximumDate, currentDate > maximumDate {
+			self.currentDate = maximumDate
 		}
 	}
 	
