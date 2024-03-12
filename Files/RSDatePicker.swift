@@ -2,15 +2,13 @@
 //  RSDatePicker
 //
 //  Created by Radu Ursache - RanduSoft
-//  v1.5.0
+//  v1.7.1
 //
 
 /*
- 
- Known issues:
+   Known issues:
 	- Selecting the same day in different month/year with closeWhenSelectingDate = true will not close the popup. Fixing this will actually make the popup close for each month/year change
 	- The popup will be presented over the view when using a big frame height. This could be fixed by fiddling with the transform of the underlaying date picker
- 
  */
 
 import UIKit
@@ -91,6 +89,11 @@ open class RSDatePicker: UIView {
 			self.layoutIfNeeded()
 		}
 	}
+    public var calendarIconImage: UIImage = UIImage(systemName: "calendar")! {
+        didSet {
+            self.calendarImageView.image = self.calendarIconImage
+        }
+    }
 	public var font: UIFont? {
 		didSet {
 			self.dateLabel.font = self.font
@@ -171,7 +174,7 @@ open class RSDatePicker: UIView {
         self.updateUI()
 	}
     
-    open func updateUI() {}
+    open func updateUI() { }
 	
 	private func prepareDatePicker() {
 		self.hideDateLabel()
@@ -360,8 +363,8 @@ fileprivate extension UIView {
         }
     }
 
-    class func getAllSubviews(from parenView: UIView, types: [UIView.Type]) -> [UIView] {
-        return parenView.subviews.flatMap { subView -> [UIView] in
+    class func getAllSubviews(from parentView: UIView, types: [UIView.Type]) -> [UIView] {
+        return parentView.subviews.flatMap { subView -> [UIView] in
             var result = getAllSubviews(from: subView) as [UIView]
             for type in types {
                 if subView.classForCoder == type {

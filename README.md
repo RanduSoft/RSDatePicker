@@ -25,6 +25,7 @@ You can customize the date picker in multiple ways:
 - `closeAnimationDuration` controls the animation speed when closing the picker
 - `calendarIconIsHidden` controls if the calendar icon is hidden
 - `calendarIconSizeMultiplier` controls the multiplier of the aspect ratio of the calendar imageview
+- `calendarIconImage` sets the calendar icon
 - `left/right/top/bottomMargin` changes the margins of the container view
 
 There is also a callback for receiving the new picked date: `didChangeDate`
@@ -52,6 +53,7 @@ self.datePicker.initialText = "Select Date"
 self.datePicker.calendarIconIsHidden = false
 self.datePicker.calendarIconTint = .label
 self.datePicker.calendarIconSizeMultiplier = 0.8
+self.datePicker.calendarIconImage = UIImage(systemName: "calendar")!
 self.datePicker.forceScalePicker = true
 self.datePicker.closeWhenSelectingDate = true
 self.datePicker.minimumDate = Calendar.current.date(byAdding: .day, value: -4, to: Date()) // 4 days ago
