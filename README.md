@@ -32,6 +32,11 @@ There is also a callback for receiving the new picked date: `didChangeDate`
 
 You can also get the current date whenever you need by using `currentDate`
 
+> [!NOTE]
+> While running on iPad, it's recommended to use `forceScalePicker = true` so the picker will scale to the full width.
+> 
+> There is also the `pickerAlignment` property which can change the date picker modal position
+
 ## Full example
 
 ```swift
@@ -55,6 +60,7 @@ self.datePicker.calendarIconTint = .label
 self.datePicker.calendarIconSizeMultiplier = 0.8
 self.datePicker.calendarIconImage = UIImage(systemName: "calendar")!
 self.datePicker.forceScalePicker = true
+self.datePicker.pickerAlignment = .center
 self.datePicker.closeWhenSelectingDate = true
 self.datePicker.minimumDate = Calendar.current.date(byAdding: .day, value: -4, to: Date()) // 4 days ago
 self.datePicker.maximumDate = Calendar.current.date(byAdding: .day, value: 20, to: Date()) // 20 days in the future

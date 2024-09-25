@@ -2,7 +2,7 @@
 //  RSDatePicker
 //
 //  Created by Radu Ursache - RanduSoft
-//  v1.7.1
+//  v1.8.0
 //
 
 /*
@@ -104,7 +104,7 @@ open class RSDatePicker: UIView {
 			self.dateLabel.textColor = self.textColor
 		}
 	}
-    public var initialText: String = "Select date" {
+    public var initialText: String = "Select {DATE/TIME}" {
         didSet {
             guard self.currentDate == nil else { return }
             self.didUpdateDate()
@@ -131,6 +131,7 @@ open class RSDatePicker: UIView {
 		}
 	}
 	public var forceScalePicker: Bool = false
+    public var pickerAlignment: NSTextAlignment = .right
     
     override open var backgroundColor: UIColor? {
         didSet {
@@ -174,7 +175,9 @@ open class RSDatePicker: UIView {
         self.updateUI()
 	}
     
-    open func updateUI() { }
+    open func updateUI() {
+        
+    }
 	
 	private func prepareDatePicker() {
 		self.hideDateLabel()
@@ -182,10 +185,11 @@ open class RSDatePicker: UIView {
 		self.datePicker.layer.zPosition = CGFloat(MAXFLOAT)
         self.datePicker.datePickerMode = self.pickerMode?.datePickerMode ?? .date
 		self.datePicker.alpha = 0.03
+        
 		self.checkDateLimits()
 		self.updateMargins()
         
-        self.dateLabel.text = self.initialText
+        self.dateLabel.text = self.initialText.replacingOccurrences(of: "{DATE/TIME}", with: self.datePicker.datePickerMode == .time ? "time" : "date").capitalized
 	}
 	
     private func didUpdateDate() {
@@ -221,19 +225,39 @@ open class RSDatePicker: UIView {
             .filter({ "\($0.classForCoder)" == "_UIDatePickerLinkedLabel" }).first
         let datePickerTimeLabel = datePickerSubviews
             .filter({ "\($0.classForCoder)" == "_UIDatePickerCompactTimeLabel" }).first
+        let datePickerButton = datePickerTimeLabel?.subviews
+            .filter({ "\($0.classForCoder)" == "UIButton" }).first
         
         datePickerLinkedLabel?.alpha = 0
         datePickerTimeLabel?.alpha = 0.1 // can't be lower or it won't work
-//        datePickerTimeLabel?.backgroundColor = .red // debug
+        datePickerTimeLabel?.backgroundColor = .red // debug
 		
-		if self.forceScalePicker {
-            let scaleX: Double = 6
-            let scaleY: Double = 2.3
-            
-            if let actualPickerContainer = datePickerLinkedLabel?.superview {
-                actualPickerContainer.transform = CGAffineTransform(scaleX: scaleX, y: scaleY)
+        if self.forceScalePicker {
+            datePickerButton?.subviews.filter({ "\($0.classForCoder)" == "UILabel" }).forEach {
+                ($0 as? UILabel)?.font = .systemFont(ofSize: 500)
             }
-            datePickerTimeLabel?.transform = CGAffineTransform(scaleX: scaleX * 2, y: scaleY)
+        }
+        
+        let xTransform: Double ; let yTransform: Double
+        
+        switch self.pickerAlignment {
+            case .left:
+                xTransform = 10
+                yTransform = 8
+            case .center:
+                xTransform = 0.285 * log(self.bounds.width - 218 + 60) - 0.175
+                yTransform = 1
+            case .right, .justified, .natural:
+                xTransform = 0
+                yTransform = 1
+            default:
+                xTransform = 0
+                yTransform = 1
+        }
+        
+        if xTransform != 0 {
+            datePickerLinkedLabel?.superview?.transform = CGAffineTransform(scaleX: xTransform, y: yTransform)
+            datePickerTimeLabel?.transform = CGAffineTransform(scaleX: xTransform, y: yTransform)
 		}
 	}
 	
