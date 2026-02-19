@@ -83,14 +83,17 @@ open class RSDatePicker: UIView {
 	}
 
 	public var pickerMode: PickerMode = .date {
-		didSet { updateDateLabel() }
+		didSet {
+			updateDateLabel()
+			updateDefaultIcon()
+		}
 	}
 
 	public var dateFormat: String? {
 		didSet { updateDateLabel() }
 	}
 
-	public var initialText: String = "Select date" {
+	public var initialText: String? {
 		didSet {
 			if currentDate == nil { updateDateLabel() }
 		}
@@ -117,7 +120,9 @@ open class RSDatePicker: UIView {
 	}
 
 	public var calendarIconImage: UIImage? {
-		didSet { calendarImageView.image = calendarIconImage }
+		didSet {
+			calendarImageView.image = calendarIconImage ?? defaultIcon
+		}
 	}
 
 	public var font: UIFont? {
@@ -147,6 +152,8 @@ open class RSDatePicker: UIView {
 	public var popoverAlignment: PopoverAlignment = .trailing
 
 	public var popoverSize: CGSize?
+
+	public var pickerTintColor: UIColor?
 
 	// MARK: - Callback
 
@@ -232,6 +239,7 @@ open class RSDatePicker: UIView {
 		pickerVC.minimumDate = minimumDate
 		pickerVC.maximumDate = maximumDate
 		pickerVC.closeOnSelection = closeWhenSelectingDate && pickerMode == .date
+		pickerVC.pickerTintColor = pickerTintColor
 		pickerVC.preferredContentSize = popoverSize ?? defaultPopoverSize()
 		pickerVC.modalPresentationStyle = .popover
 
@@ -252,10 +260,25 @@ open class RSDatePicker: UIView {
 
 	// MARK: - Helpers
 
+	private var defaultInitialText: String {
+		pickerMode == .time ? "Select time" : "Select date"
+	}
+
+	private var defaultIcon: UIImage? {
+		UIImage(systemName: pickerMode == .time ? "clock" : "calendar")
+	}
+
+	private func updateDefaultIcon() {
+		if calendarIconImage == nil {
+			calendarImageView.image = defaultIcon
+		}
+	}
+
 	private func updateDateLabel() {
 		guard let date = currentDate else {
-			dateLabel.text = initialText
-			accessibilityValue = initialText
+			let placeholder = initialText ?? defaultInitialText
+			dateLabel.text = placeholder
+			accessibilityValue = placeholder
 			return
 		}
 
@@ -322,6 +345,7 @@ private class RSDatePickerPopoverController: UIViewController, UIPopoverPresenta
 	var minimumDate: Date?
 	var maximumDate: Date?
 	var closeOnSelection: Bool = true
+	var pickerTintColor: UIColor?
 	var onDateChanged: ((Date) -> Void)?
 
 	private let datePicker: UIDatePicker = {
@@ -347,6 +371,9 @@ private class RSDatePickerPopoverController: UIViewController, UIPopoverPresenta
 		datePicker.maximumDate = maximumDate
 		if let date = currentDate {
 			datePicker.date = date
+		}
+		if let tint = pickerTintColor {
+			datePicker.tintColor = tint
 		}
 		datePicker.addTarget(self, action: #selector(dateChanged(_:)), for: .valueChanged)
 	}

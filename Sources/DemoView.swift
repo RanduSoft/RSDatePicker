@@ -23,18 +23,11 @@ final class DemoViewController: UIViewController {
 		title = "RSDatePicker Demo"
 
 		setupScrollView()
-		addSection("Default (date mode)", picker: makeDefault())
+		addSection("Date mode", picker: makeDatePicker())
 		addSection("Time mode", picker: makeTimePicker())
-		addSection("Custom styling", picker: makeCustomStyled())
-		addSection("No icon, centered text", picker: makeNoIcon())
-		addSection("Custom icon & tint", picker: makeCustomIcon())
-		addSection("Small icon (0.5x)", picker: makeSmallIcon())
-		addSection("With date limits", picker: makeDateLimits())
-		addSection("Popover aligned leading", picker: makeLeadingAlignment())
-		addSection("Popover aligned center", picker: makeCenterAlignment())
-		addSection("Custom popover size", picker: makeCustomPopoverSize())
-		addSection("Custom margins", picker: makeCustomMargins())
-		addSection("No auto-close", picker: makeNoAutoClose())
+		addSection("Custom styling & tint", picker: makeCustomStyled())
+		addSection("No icon, centered popover", picker: makeNoIcon())
+		addSection("Date limits & no auto-close", picker: makeDateLimits())
 	}
 
 	private func setupScrollView() {
@@ -84,19 +77,16 @@ final class DemoViewController: UIViewController {
 
 	// MARK: - Picker Variants
 
-	private func makeDefault() -> RSDatePicker {
+	private func makeDatePicker() -> RSDatePicker {
 		let picker = RSDatePicker()
 		picker.pickerMode = .date
-		picker.initialText = "Select date"
-		picker.didChangeDate = { print("Default:", $0) }
+		picker.didChangeDate = { print("Date:", $0) }
 		return picker
 	}
 
 	private func makeTimePicker() -> RSDatePicker {
 		let picker = RSDatePicker()
 		picker.pickerMode = .time
-		picker.initialText = "Select time"
-		picker.currentDate = Date()
 		picker.didChangeDate = { print("Time:", $0) }
 		return picker
 	}
@@ -107,6 +97,8 @@ final class DemoViewController: UIViewController {
 		picker.font = .systemFont(ofSize: 20, weight: .semibold)
 		picker.textColor = .systemIndigo
 		picker.calendarIconTint = .systemIndigo
+		picker.pickerTintColor = .systemIndigo
+		picker.calendarIconSizeMultiplier = 0.5
 		picker.currentDate = Date()
 		picker.didChangeDate = { print("Styled:", $0) }
 		return picker
@@ -116,87 +108,20 @@ final class DemoViewController: UIViewController {
 		let picker = RSDatePicker()
 		picker.pickerMode = .date
 		picker.calendarIconIsHidden = true
+		picker.popoverAlignment = .center
 		picker.initialText = "Tap to pick a date"
 		picker.didChangeDate = { print("No icon:", $0) }
-		return picker
-	}
-
-	private func makeCustomIcon() -> RSDatePicker {
-		let picker = RSDatePicker()
-		picker.pickerMode = .date
-		picker.calendarIconImage = UIImage(systemName: "clock.fill")
-		picker.calendarIconTint = .systemOrange
-		picker.textColor = .systemOrange
-		picker.currentDate = Date()
-		picker.didChangeDate = { print("Custom icon:", $0) }
-		return picker
-	}
-
-	private func makeSmallIcon() -> RSDatePicker {
-		let picker = RSDatePicker()
-		picker.pickerMode = .date
-		picker.calendarIconSizeMultiplier = 0.5
-		picker.currentDate = Date()
-		picker.didChangeDate = { print("Small icon:", $0) }
 		return picker
 	}
 
 	private func makeDateLimits() -> RSDatePicker {
 		let picker = RSDatePicker()
 		picker.pickerMode = .date
+		picker.closeWhenSelectingDate = false
 		picker.minimumDate = Calendar.current.date(byAdding: .day, value: -7, to: Date())
 		picker.maximumDate = Calendar.current.date(byAdding: .day, value: 7, to: Date())
 		picker.currentDate = Date()
-		picker.initialText = "±7 days range"
 		picker.didChangeDate = { print("Limited:", $0) }
-		return picker
-	}
-
-	private func makeLeadingAlignment() -> RSDatePicker {
-		let picker = RSDatePicker()
-		picker.pickerMode = .date
-		picker.popoverAlignment = .leading
-		picker.initialText = "Popover → leading"
-		picker.didChangeDate = { print("Leading:", $0) }
-		return picker
-	}
-
-	private func makeCenterAlignment() -> RSDatePicker {
-		let picker = RSDatePicker()
-		picker.pickerMode = .date
-		picker.popoverAlignment = .center
-		picker.initialText = "Popover → center"
-		picker.didChangeDate = { print("Center:", $0) }
-		return picker
-	}
-
-	private func makeCustomPopoverSize() -> RSDatePicker {
-		let picker = RSDatePicker()
-		picker.pickerMode = .date
-		picker.popoverSize = CGSize(width: 350, height: 420)
-		picker.initialText = "Larger popover (350×420)"
-		picker.didChangeDate = { print("Custom size:", $0) }
-		return picker
-	}
-
-	private func makeCustomMargins() -> RSDatePicker {
-		let picker = RSDatePicker()
-		picker.pickerMode = .date
-		picker.leftMargin = 24
-		picker.rightMargin = 24
-		picker.topMargin = 14
-		picker.bottomMargin = 14
-		picker.initialText = "Extra padding (24h / 14v)"
-		picker.didChangeDate = { print("Margins:", $0) }
-		return picker
-	}
-
-	private func makeNoAutoClose() -> RSDatePicker {
-		let picker = RSDatePicker()
-		picker.pickerMode = .date
-		picker.closeWhenSelectingDate = false
-		picker.initialText = "No auto-close"
-		picker.didChangeDate = { print("No close:", $0) }
 		return picker
 	}
 }
@@ -213,5 +138,5 @@ private struct DemoViewRepresentable: UIViewControllerRepresentable {
 
 #Preview("RSDatePicker Demo") {
 	DemoViewRepresentable()
-        .ignoresSafeArea(.all)
+		.ignoresSafeArea(.all)
 }
